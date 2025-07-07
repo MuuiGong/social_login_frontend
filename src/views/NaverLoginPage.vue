@@ -56,16 +56,18 @@ export default {
       // 네이버 OAuth 2.0 REST API 방식
       const CLIENT_ID = 'c943YPmMR8bflLezMJGz';
       const REDIRECT_URI = 'http://localhost:5173/login/oauth2/code/naver';
-      const STATE = this.generateRandomString();
       
-      // state를 localStorage에 저장 (CSRF 공격 방지)
-      localStorage.setItem('naver_oauth_state', STATE);
+      // 백엔드에 보낼 redirect URL을 URL-Safe Base64로 인코딩
+      const REDIRECT_URL = this.encodeUrlSafeBase64(REDIRECT_URI); // URL-Safe Base64 인코딩
+      
+      // OAuth 제공자용 state에 redirect URL 포함
+      localStorage.setItem('naver_oauth_state', REDIRECT_URL);
       
       const naverAuthUrl =
         `https://nid.naver.com/oauth2.0/authorize?response_type=code` +
         `&client_id=${CLIENT_ID}` +
         `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
-        `&state=${STATE}`;
+        `&state=${REDIRECT_URL}`;
       
       window.location.href = naverAuthUrl;
     },
@@ -74,6 +76,14 @@ export default {
       const array = new Uint32Array(28);
       window.crypto.getRandomValues(array);
       return Array.from(array, dec => ('0' + dec.toString(16)).substr(-2)).join('');
+    },
+    
+    // URL-Safe Base64 인코딩
+    encodeUrlSafeBase64(str) {
+      return btoa(str)
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=/g, '');
     },
     
     goBack() {

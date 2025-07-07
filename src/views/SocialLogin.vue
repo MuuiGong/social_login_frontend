@@ -84,8 +84,8 @@ export default {
       this.$router.push('/naver-login');
     },
     goGoogleLogin() {
-      // 구글 로그인 로직 (나중에 구현)
-      console.log('구글 로그인');
+      // 구글 로그인 페이지로 이동
+      this.$router.push('/google-login');
     },
     goAppleLogin() {
       // 애플 로그인 로직 (나중에 구현)

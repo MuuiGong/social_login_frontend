@@ -1,25 +1,29 @@
 <template>
-  <div class="kakao-login-container">
-    <div class="kakao-login-card">
+  <div class="google-login-container">
+    <div class="google-login-card">
       <div class="logo-section">
-        <div class="kakao-logo">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" rx="8" fill="#FEE500"/>
-            <text x="20" y="25" text-anchor="middle" font-size="15" font-family="Arial, sans-serif" fill="#3C1E1E" font-weight="bold">kakao</text>
+        <div class="google-logo">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
         </div>
-        <h1 class="title">카카오 로그인</h1>
-        <p class="subtitle">카카오 계정으로 간편하게 로그인하세요</p>
+        <h1 class="title">구글 로그인</h1>
+        <p class="subtitle">구글 계정으로 간편하게 로그인하세요</p>
       </div>
       
       <div class="login-section">
-        <!-- 카카오 로그인 버튼 -->
-        <button @click="goKakaoLogin" class="kakao-login-btn">
-          <svg class="btn-icon" width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" rx="8" fill="#FEE500"/>
-            <text x="20" y="25" text-anchor="middle" font-size="15" font-family="Arial, sans-serif" fill="#3C1E1E" font-weight="bold">kakao</text>
+        <!-- 구글 로그인 버튼 -->
+        <button @click="goGoogleLogin" class="google-login-btn">
+          <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
-          카카오로 로그인
+          구글로 로그인
         </button>
         
         <div class="divider">
@@ -52,31 +56,34 @@
 
 <script>
 export default {
-  name: 'KakaoLoginPage',
+  name: 'GoogleLoginPage',
   methods: {
-    goKakaoLogin() {
-      // 카카오 OAuth 2.0 REST API 방식
-      const REST_API_KEY = '6c656322cc1bcb9669fbaee86b9df89a';
-      const REDIRECT_URI = 'http://localhost:5173/login/oauth2/code/kakao';
+    goGoogleLogin() {
+      // 구글 OAuth 2.0 REST API 방식
+      const CLIENT_ID = '376774774273-5do2k4e5r3k13mgjdfam4csprajporr9.apps.googleusercontent.com';
+      const REDIRECT_URI = 'http://localhost:5173/login/oauth2/code/google';
+      const SCOPE = 'email';
       
       // 백엔드에 보낼 redirect URL을 URL-Safe Base64로 인코딩
       const REDIRECT_URL = this.encodeUrlSafeBase64(REDIRECT_URI); // URL-Safe Base64 인코딩
       
       // OAuth 제공자용 state에 redirect URL 포함
-      localStorage.setItem('kakao_oauth_state', REDIRECT_URL);
+      localStorage.setItem('google_oauth_state', REDIRECT_URL);
       
-      const kakaoAuthUrl =
-        `https://kauth.kakao.com/oauth/authorize?response_type=code` +
-        `&client_id=${REST_API_KEY}` +
+      const googleAuthUrl =
+        `https://accounts.google.com/o/oauth2/v2/auth?response_type=code` +
+        `&client_id=${CLIENT_ID}` +
         `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
+        `&scope=${encodeURIComponent(SCOPE)}` +
         `&state=${REDIRECT_URL}`;
       
-      console.log('카카오 로그인 URL:', kakaoAuthUrl);
-      console.log('REST_API_KEY:', REST_API_KEY);
+      console.log('구글 로그인 URL:', googleAuthUrl);
+      console.log('CLIENT_ID:', CLIENT_ID);
       console.log('REDIRECT_URI:', REDIRECT_URI);
+      console.log('SCOPE:', SCOPE);
       console.log('STATE:', REDIRECT_URL);
       
-      window.location.href = kakaoAuthUrl;
+      window.location.href = googleAuthUrl;
     },
     
     generateRandomString() {
@@ -101,17 +108,17 @@ export default {
 </script>
 
 <style scoped>
-.kakao-login-container {
+.google-login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #FEE500 0%, #FDD835 100%);
+  background: linear-gradient(135deg, #4285F4 0%, #34A853 100%);
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.kakao-login-card {
+.google-login-card {
   background: white;
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
@@ -137,13 +144,13 @@ export default {
   margin-bottom: 40px;
 }
 
-.kakao-logo {
+.google-logo {
   margin-bottom: 20px;
   display: inline-block;
   padding: 15px;
-  background: #FEE500;
+  background: white;
   border-radius: 50%;
-  box-shadow: 0 8px 16px rgba(254, 229, 0, 0.3);
+  box-shadow: 0 8px 16px rgba(66, 133, 244, 0.3);
 }
 
 .title {
@@ -165,12 +172,12 @@ export default {
   margin-top: 30px;
 }
 
-.kakao-login-btn {
+.google-login-btn {
   width: 100%;
   padding: 16px 24px;
-  background: #FEE500;
-  color: #3C1E1E;
-  border: none;
+  background: white;
+  color: #757575;
+  border: 1px solid #dadce0;
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
@@ -181,16 +188,16 @@ export default {
   gap: 10px;
   transition: all 0.3s ease;
   margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(254, 229, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.kakao-login-btn:hover {
-  background: #FDD835;
+.google-login-btn:hover {
+  background: #f8f9fa;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(254, 229, 0, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.kakao-login-btn:active {
+.google-login-btn:active {
   transform: translateY(0);
 }
 
@@ -224,29 +231,29 @@ export default {
 
 .back-btn {
   width: 100%;
-  padding: 16px 24px;
-  background: #f8f9fa;
+  padding: 12px 24px;
+  background: transparent;
   color: #666;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   transition: all 0.3s ease;
   margin-bottom: 20px;
 }
 
 .back-btn:hover {
-  background: #e9ecef;
-  transform: translateY(-2px);
+  background: #f8f9fa;
+  border-color: #ccc;
 }
 
 .back-icon {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .info-section {
@@ -269,31 +276,15 @@ export default {
 
 .info-item:hover {
   background: #e9ecef;
-  transform: translateX(5px);
 }
 
 .info-icon {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .info-text {
   font-size: 14px;
   color: #666;
   font-weight: 500;
-}
-
-@media (max-width: 480px) {
-  .kakao-login-card {
-    padding: 30px 20px;
-    margin: 10px;
-  }
-  
-  .title {
-    font-size: 24px;
-  }
-  
-  .subtitle {
-    font-size: 14px;
-  }
 }
 </style> 

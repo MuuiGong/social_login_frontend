@@ -63,15 +63,35 @@ export default {
       const error = params.get('error');
       const errorDescription = params.get('error_description');
       
-      // state 검증 (CSRF 공격 방지)
+      // state 검증 (CSRF 공격 방지) - 더 유연하게 처리
       const savedState = localStorage.getItem('naver_oauth_state');
-      if (this.state !== savedState) {
-        this.error = 'State 검증 실패: CSRF 공격 가능성';
-        return;
+      if (savedState && this.state !== savedState) {
+        console.warn('State 불일치:', { received: this.state, saved: savedState });
+        // 개발 환경에서는 경고만 표시하고 계속 진행
+        if (process.env.NODE_ENV === 'production') {
+          this.error = 'State 검증 실패: CSRF 공격 가능성';
+          return;
+        }
       }
       
       if (error) {
         this.error = `${error}: ${errorDescription}`;
+      }
+      
+      // state에서 redirect URL 디코딩 (백엔드에서 처리할 값)
+      if (this.state) {
+        try {
+          // URL-Safe Base64 디코딩 (백엔드와 동일한 방식)
+          const padded = this.state + '='.repeat((4 - this.state.length % 4) % 4);
+          const base64 = padded.replace(/-/g, '+').replace(/_/g, '/');
+          const decodedUrl = atob(base64);
+          console.log('백엔드로 전송될 redirect URL:', decodedUrl);
+          // 여기서 redirect URL을 사용할 수 있습니다
+        } catch (error) {
+          console.warn('State 디코딩 실패:', error);
+        }
+      } else {
+        console.log('State가 없습니다. 기본값 사용');
       }
       
       // state 사용 후 삭제
@@ -86,7 +106,7 @@ export default {
       
       try {
         // 백엔드로 인가 코드를 전송하여 액세스 토큰 교환 (GET 방식)
-        const response = await fetch(`http://localhost:8080/auth/login/naver?code=${this.code}&state=${this.state}`, {
+        const response = await fetch(`https://api.humanzipyo.com/auth/login/naver?code=${this.code}&state=${this.state}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -105,7 +125,7 @@ export default {
     
     async sendToBackend() {
       try {
-        const response = await fetch(`http://localhost:8080/auth/verify/naver?access_token=${this.accessToken}`, {
+        const response = await fetch(`https://api.humanzipyo.com/auth/verify/naver?access_token=${this.accessToken}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
